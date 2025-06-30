@@ -1,0 +1,32 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+## Ignore build results
+bin/
+obj/
+
+## User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## VS Code / VS specific folders
+.vs/
+.vscode/
+
+## Log files
+*.log
+
+## Secrets and environment
+secrets.json
+.env
+appsettings.Development.json
+
+## Others
+*.db
+*.bak
+
+
+/packages/ABCpdf.12.3.0
