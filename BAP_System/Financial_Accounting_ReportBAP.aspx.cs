@@ -140,6 +140,9 @@ namespace BAP_System
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
 
+
+
+
             #region new code 
 
             System.Web.UI.WebControls.Button btn = (System.Web.UI.WebControls.Button)sender;
@@ -203,7 +206,12 @@ namespace BAP_System
 
             }
 
-          
+
+
+
+            
+
+
             //string Reportype = (ddlReport.SelectedValue == "FIN_Seg_PL" || ddlReport.SelectedValue == "PL") ? "P&L" : "BSH" ;           
             DataTable dt = new DataTable();
             using (SqlConnection conn = new SqlConnection(connectionString))
@@ -225,6 +233,22 @@ namespace BAP_System
 
             if (report == "FIN_Seg_PL")
             {
+                var result = Sp_chekperiode("CheckPeriode", periode, endperiode);
+
+                if (!result.IsSuccess)
+                {
+                    Response.Cookies.Add(new HttpCookie("fileDownload", "error")
+                    {
+                        Path = "/",
+                        Expires = DateTime.Now.AddMinutes(5)
+                    });
+
+                    string message = "Periksa kembali bulan yang dipilih, sesuaikan dengan periode yang aktif!";
+                    string js = $"Errorsave('{message}');";
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "periodeError", js, true);
+
+                    return; // Sudahi eksekusi tapi tidak memaksa berhenti seperti Response.End
+                }
                 templatePath = Server.MapPath("~/Templates/Template_Report.xlsx");
 
             }
@@ -440,17 +464,30 @@ namespace BAP_System
                         ms.Position = 0;
                         
                        if(reportType ==  "PL") { fileName = $"{sheettype}_{branch}({periode} - {endperiode}).xlsx"; } else { fileName = $"{sheettype}_{branch}({periode}).xlsx"; }
-                    Response.Cookies.Add(new HttpCookie("fileDownload", "true")
-                        {
-                            Path = "/",
-                            Expires = DateTime.Now.AddMinutes(5)
-                        });
-                        Response.Clear();
-                        Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                        Response.AddHeader("content-disposition", $"attachment;filename={fileName}");
-                        Response.BinaryWrite(ms.ToArray());
-                        Response.End();
-                    }
+                    Response.Cookies.Add(new HttpCookie("fileDownload", "success")
+                    {
+                        Path = "/",
+                        Expires = DateTime.Now.AddMinutes(5)
+                    });
+                    Response.Clear();
+                    Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                    Response.AddHeader("content-disposition", $"attachment;filename={fileName}");
+                    Response.BinaryWrite(ms.ToArray());
+                    Response.End();
+
+
+                    //Response.Cookies.Add(new HttpCookie("fileDownload", "true")
+                    //{
+                    //    Path = "/",
+                    //    Expires = DateTime.Now.AddMinutes(5)
+                    //});
+                    //Response.Clear();
+                    //Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                    //Response.AddHeader("content-disposition", $"attachment;filename={fileName}");
+                    //Response.BinaryWrite(ms.ToArray());
+                    //HttpContext.Current.ApplicationInstance.CompleteRequest(); 
+
+                }
             }
             #endregion
 
@@ -563,7 +600,55 @@ namespace BAP_System
 
 
 
-    
+        public ResultValue Sp_chekperiode(string Actionname, string periode, string endperiode)
+        {
+            var result = new ResultValue();
+
+
+            try
+            {
+                string path = ConfigurationManager.ConnectionStrings["dbpath"].ConnectionString;
+                using (SqlConnection con = new SqlConnection(path))
+                {
+                    con.Open();
+                    using (SqlCommand cmd = new SqlCommand("sp_chekperiode", con))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@StatementType", Actionname);
+                        cmd.Parameters.AddWithValue("@start", periode);
+                        cmd.Parameters.AddWithValue("@end", endperiode);
+                        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                        {
+                            da.Fill(result.Data);
+                        }
+
+                        if (result.Data.Rows.Count > 0)
+                        {
+                            DataRow lastRow = result.Data.Rows[result.Data.Rows.Count - 1];
+                            if (result.Data.Columns.Contains("IsSuccess") && result.Data.Columns.Contains("Scop_identity"))
+                            {
+                                result.IsSuccess = lastRow["IsSuccess"].ToString() == "true";
+                                result.Identity = lastRow["Scop_identity"].ToString();
+
+                                result.Data.Rows.Remove(lastRow);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.Identity = "0";
+            }
+
+            return (result);
+        }
+
+
+
+
 
     }
 }

@@ -7,16 +7,16 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="/Scripts/style-boxlogin.css" rel="stylesheet" />    
+    <link href="Scripts/style-boxlogin.css" rel="stylesheet" />    
     <link rel="icon" href="img/favicon.ico" type="image/x-icon">
     <script type="text/javascript" src="date/JS/jquery-1.10.2.min.js"></script>
-    <link href="/Content/Ionicons/css/ionicons.min.css" rel="stylesheet" />
-    <link href="/vendors/sweetalert.css" rel="stylesheet" />
-    <link href="/css/sweetalert.css" rel="stylesheet" />
-    <script src="/js/sweetalert.min.js"></script>
+    <link href="Content/Ionicons/css/ionicons.min.css" rel="stylesheet" />
+    <link href="vendors/sweetalert.css" rel="stylesheet" />
+    <link href="css/sweetalert.css" rel="stylesheet" />
+    <script src="js/sweetalert.min.js"></script>
 
-    <link href="/vendors/toastr/toastr.min.css" rel="stylesheet" />
-    <script src="/vendors/toastr/toastr.min.js"></script>
+    <link href="vendors/toastr/toastr.min.css" rel="stylesheet" />
+    <script src="vendors/toastr/toastr.min.js"></script>
     <script type="text/javascript">
         toastr.options = {
             "closeButton": false,
@@ -254,9 +254,9 @@
         <!-- END CONTENT SECTION -->
     </div>
 
-    <script src="/Scripts/style-login.js"></script>
-    <script src="/vendors/sweetalert.js"></script>
-    <script src="/vendors/sweetalert.min.js"></script>
+    <script src="Scripts/style-login.js"></script>
+    <script src="vendors/sweetalert.js"></script>
+    <script src="vendors/sweetalert.min.js"></script>
 
 </body>
 </html>

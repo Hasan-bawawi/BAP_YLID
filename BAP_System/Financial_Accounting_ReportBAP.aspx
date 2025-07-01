@@ -20,6 +20,11 @@
       <script src="css/css_intro/intro.min.js"></script>
       <link href="css/css_intro/introjs.min.css" rel="stylesheet" />
      <script>
+
+      
+
+
+
          $(document).ready(function () {
              //var $startPicker = $('.datepicker1.start');
              //var $endPicker = $('.datepicker1.end');
@@ -65,15 +70,49 @@
 
      </script>
 
-   
+<%--   
     <script type="text/javascript">
 
+
+        let checkInterval = null;
+
+        function Errorsave(message) {
+
+            debugger
+            console.log("Errorsave called:", message);
+
+            if (checkInterval) {
+                console.log("clearing checkInterval...");
+                clearInterval(checkInterval);
+                checkInterval = null;
+            } else {
+                console.log("checkInterval kosong atau sudah null");
+            }
+
+            hideLoading();
+
+            swal({
+                title: 'Failed!',
+                text: message,
+                icon: 'error',
+                buttons: false,
+                timer: 3000
+            });
+        }
+
+
+
+
         function ShowLoading() {
+
+            console.log("ShowLoading called"); // debug
+
             document.getElementById("loadingOverlay").style.display = "block";
             // Cek cookie setiap 500ms
             let checkInterval = setInterval(function () {
                 if (document.cookie.indexOf("fileDownload=true") !== -1) {
                     clearInterval(checkInterval);
+
                     hideLoading();
 
                     // Hapus cookie
@@ -86,7 +125,26 @@
         }
 
         function hideLoading() {
-            document.getElementById("loadingOverlay").style.display = "none";
+            debugger    
+            //console.log("hideLoading called"); // debug
+            //document.getElementById("loadingOverlay").style.display = "none";
+            console.log("hideLoading dipanggil");
+
+            const overlay = document.getElementById("loadingOverlay");
+
+            if (!overlay) {
+                console.warn("❌ Element #loadingOverlay tidak ditemukan!");
+                return;
+            }
+
+            console.log("Sebelum hide: display =", overlay.style.display);
+
+            overlay.style.display = "none";
+
+            console.log("Setelah hide: display =", overlay.style.display);
+
+            // Tambahan: langsung paksa pakai inline style
+            overlay.style.setProperty("display", "none", "important");
 
         }
 
@@ -136,9 +194,119 @@
             }
         }
 
-    </script>
+    </script>--%>
 
-  
+  <script type="text/javascript">
+
+      let checkInterval = null;
+
+      function ShowLoading() {
+          console.log("ShowLoading called");
+
+          const overlay = document.getElementById("loadingOverlay");
+          overlay.style.display = "block";
+
+
+          checkInterval = setInterval(function () {
+              const cookies = document.cookie;
+
+              if (cookies.includes("fileDownload=success")) {
+                  //console.log("✅ Download sukses");
+                  clearInterval(checkInterval);
+                  checkInterval = null;
+
+                  hideLoading();
+                  document.cookie = "fileDownload=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+
+                  // Optional reload, kalau memang perlu
+                  location.reload();
+              }
+
+              if (cookies.includes("fileDownload=error")) {
+                  //console.log("❌ Download gagal");
+                  clearInterval(checkInterval);
+                  checkInterval = null;
+
+                  hideLoading();
+                  document.cookie = "fileDownload=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+
+                  Errorsave("Periksa kembali bulan yang dipilih, sesuaikan dengan periode yang aktif!");
+
+                  /* location.reload();*/
+                  setTimeout(() => {
+                      location.reload();
+                  }, 3000);
+
+              }
+          }, 500);
+
+      }
+
+      function hideLoading() {
+
+          console.log("hideLoading dipanggil");
+
+          const overlay = document.getElementById("loadingOverlay");
+
+          if (!overlay) {
+              //console.warn("❌ #loadingOverlay tidak ditemukan");
+              return;
+          }
+
+          overlay.style.setProperty("display", "none", "important");
+      }
+
+      function Errorsave(message) {
+
+          swal({
+
+              title: 'Failed!',
+              text: message,
+              type: 'error',
+              showConfirmButton: false,
+              timer: 3000
+
+          });
+      }
+
+      function handleClientClick() {
+          var ddl = document.getElementById("<%= ddlReport.ClientID %>");
+        if (ddl && (ddl.value === "0" || ddl.value === "")) {
+            ddl.style.setProperty("border", "3px solid red", "important");
+            var visual = ddl.closest(".bootstrap-select");
+            if (visual) {
+                var btn = visual.querySelector("button");
+                if (btn) btn.style.setProperty("border", "3px solid red", "important");
+            }
+            ddl.focus();
+            return;
+        }
+
+        // Reset border jika valid
+        ddl.style.setProperty("border", "", "important");
+        var visual = ddl.closest(".bootstrap-select");
+        if (visual) {
+            var btn = visual.querySelector("button");
+            if (btn) btn.style.setProperty("border", "", "important");
+        }
+
+        ShowLoading();
+        document.forms[0].target = "downloadFrame";
+
+        // Klik tombol ASP.NET tersembunyi
+        const btnSubmit = document.getElementById("<%= btnSubmit.ClientID %>");
+        if (btnSubmit) btnSubmit.click();
+    }
+
+    function handleClientClickBS() {
+        ShowLoading();
+        document.forms[0].target = "downloadFrame";
+
+        const btnSubmit2 = document.getElementById("<%= btnSubmit2.ClientID %>");
+          if (btnSubmit2) btnSubmit2.click();
+      }
+  </script>
+
 
 
     <style>
@@ -479,13 +647,16 @@
                             </div> <!-- /.col-xl-12 -->
                             <iframe id="downloadFrame" name="downloadFrame" style="display: none;"></iframe>
                                  <div id="loadingOverlay"
-                                     style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-                                            background: rgba(255, 255, 255, 0.7); z-index: 9999; text-align: center;">
-                                    <div style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);">
+                                     style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:9999;text-align:center;">
+                                     
+                   
+                                     <div style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);">
                                         <img src="img/loadingylid.gif" alt="Loading..." style="width: 80px;" />
                                         <p style="font-size: 18px; font-weight: bold; margin-top: 10px;">Processing, please wait...</p>
-                                    </div>
+                                    </div>  
                                 </div>
+
+
                         </div> <!-- /.col-xl-12 -->
                     </div> <!-- /.row -->
                 </div> <!-- /.card-body -->

@@ -158,6 +158,14 @@
               btn.style.opacity = "0.5";
           });
 
+          var deleteButtons = document.querySelectorAll('.delete-btn');
+          deleteButtons.forEach(function (btn) {
+              btn.disabled = true;
+              btn.classList.add('disabled');
+              btn.style.pointerEvents = "none";
+              btn.style.opacity = "0.5";
+          });
+
         
       }
 
