@@ -31,8 +31,8 @@
                 title: 'Failed!',
                 text: msg,
                 type: 'error',
-                showConfirmButton: false,
-                timer: 3000,
+                showConfirmButton: true,
+                timer: 10000,
                 customClass: 'swal-wide',
             });
         }
@@ -196,7 +196,7 @@
                                                     DataKeyNames="id">
                                                         <HeaderStyle BackColor="#06183d" ForeColor="White" />
                                                         <Columns>
-                                                              <asp:TemplateField HeaderText="Action" >
+                                                              <asp:TemplateField HeaderText="Action" ItemStyle-Width="100px" >
                                                                 <ItemTemplate>
                                                                     <div Class="action-cell">
                                                                          <asp:LinkButton 
@@ -229,7 +229,8 @@
                                                         <asp:BoundField DataField="DirectionType" HeaderText="DirectionType" ReadOnly="True" />
                                                         <asp:TemplateField HeaderText="Amount">
                                                                 <ItemTemplate>
-                                                                      <%# Eval("Amount") %>
+                                                                     <%-- <%# Eval("Amount") %>--%>
+                                                                    <%# Eval("Amount", "{0:N0}").ToString().Replace(",", ".") %>
                                                                 </ItemTemplate>
                                                                 <EditItemTemplate>
                                                                     <asp:TextBox 
@@ -248,7 +249,7 @@
                                                                 </EditItemTemplate>
                                                             </asp:TemplateField>
                                                         <asp:BoundField DataField="Periode" HeaderText="Periode" ReadOnly="True"  DataFormatString="{0:MMMM-yyyy}"/>
-                                                        <asp:BoundField DataField="CreatedDate" HeaderText="Create Date" ReadOnly="True" DataFormatString="{0:dd-MMMM-yyyy hh:mm:ss tt}"/>
+<%--                                                        <asp:BoundField DataField="CreatedDate" HeaderText="Create Date" ReadOnly="True" DataFormatString="{0:dd-MMMM-yyyy hh:mm:ss tt}"/>--%>
                                                         </Columns>
                                                     </asp:GridView>
                                             </div>

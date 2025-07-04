@@ -226,7 +226,7 @@ namespace BAP_System
 
         protected void btnDelete_Click(object sender, EventArgs e)
         {
-            ResultValue Result = new ResultValue();
+            //ResultValue Result = new ResultValue();
             string Message = "";
 
 
@@ -240,7 +240,9 @@ namespace BAP_System
             Direction_id.Value = dirid.ToString();
 
 
-            Result = Sp_bussinesmode("Delete");
+            //Result = 
+                
+            Sp_bussinesmode("Delete");
 
             GetDirection();
 

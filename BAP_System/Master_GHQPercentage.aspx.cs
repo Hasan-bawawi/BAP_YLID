@@ -122,7 +122,7 @@ namespace BAP_System
             if (Spchek == true)
             {
 
-                string errorMessage = "Update Berhasil";
+                string errorMessage = "Successfully Updated";
                 Message = $@"
                             setTimeout(function() {{
                                 FuncSave('{HttpUtility.JavaScriptStringEncode(errorMessage)}');
@@ -148,7 +148,7 @@ namespace BAP_System
                 TableGHQGen.HeaderRow.TableSection = TableRowSection.TableHeader;
 
 
-                string errorMessage = "";
+                string errorMessage = "Update Failed!";
 
                 Message = $@"
                             setTimeout(function() {{

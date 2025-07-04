@@ -37,6 +37,18 @@
 
         }
 
+        function FuncRemove() {
+            swal({
+                title: 'Remove Success',
+                text: 'Successfully Removed',
+                timer: '2000',
+                type: 'success',
+                showConfirmButton: false,
+                html: true,
+            }
+            );
+        }
+
 
         function FuncUpdate() {
             swal({
@@ -51,6 +63,35 @@
                     window.location.href = 'Master_BranchBAP.aspx';
                 }
             );
+        }
+
+        function confirmDelete(linkButton) {
+
+
+            var href = linkButton.getAttribute("href");
+            var match = href.match(/__doPostBack\('([^']+)'/);
+            if (match && match.length > 1) {
+                var postBackTarget = match[1];
+                console.log("PostBack Target:", postBackTarget);
+            }
+            swal({
+
+                title: 'Are you sure?',
+                text: "This data will be marked inactive.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#d33',
+                showCloseButton: true,
+
+            }, function (willDelete) {
+                if (willDelete) {
+                    __doPostBack(postBackTarget, '');
+                }
+            });
+
+            return false;
         }
 
     </script>
@@ -264,7 +305,7 @@
                                                         <Columns>
                                                          <%--   <asp:CommandField ShowEditButton="True"/>--%>
 
-                                                          <asp:TemplateField HeaderText="Action" >
+                                                          <asp:TemplateField HeaderText="Action"  ItemStyle-Width="100px">
                                                             <ItemTemplate>
                                                                 <div Class="action-cell">
                                                                      <asp:LinkButton 
@@ -272,8 +313,21 @@
                                                                          runat="server" 
                                                                          CommandName="Edit" 
                                                                          CssClass="btn mb-1 buttonColor edit-btn">
-                                                                         <i class="fa fa-pencil"></i> 
+                                                                         <i class="fa fa-pencil"></i>
+                                                                         
                                                                      </asp:LinkButton>
+
+                                                                       <asp:LinkButton 
+                                                                             ID="btnDelete" 
+                                                                             runat="server" 
+                                                                             CommandName="Hapus" 
+                                                                             CommandArgument="<%# Container.DataItemIndex %>" 
+                                                                             CssClass="btn mb-1 btn-danger edit-btn ml-2"
+                                                                             OnClick="btnDelete_Click" 
+                                                                             OnClientClick="return confirmDelete(this);" 
+                                                                             ToolTip="Remove">
+                                                                            <i class="fa  fa-trash"></i>
+                                                                         </asp:LinkButton>
                                                                 </div>
                                                                
                                                             </ItemTemplate>
@@ -332,7 +386,7 @@
                                                                   placeholder="Enter Address..." />
                                                           </EditItemTemplate>
                                                       </asp:TemplateField>            
-                                                            <asp:BoundField DataField="CreatedDate" HeaderText="Create Date" ReadOnly="True" DataFormatString="{0:dd-MMMM-yyyy hh:mm:ss tt}"/>
+<%--                                                            <asp:BoundField DataField="CreatedDate" HeaderText="Create Date" ReadOnly="True" DataFormatString="{0:dd-MMMM-yyyy hh:mm:ss tt}"/>--%>
                                                         </Columns>
                                                     </asp:GridView>
                                             </div>

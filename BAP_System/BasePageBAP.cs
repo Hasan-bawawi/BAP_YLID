@@ -71,6 +71,7 @@ namespace BAP_System
                     access.CanCreate = (bool)reader["CanCreate"];
                     access.CanEdit = (bool)reader["CanEdit"];
                     access.CanView = (bool)reader["CanView"];
+                    access.CanDelete = (bool)reader["CanDelete"];
                 }
             }
 

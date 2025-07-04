@@ -25,26 +25,26 @@ namespace BAP_System
         {
             if (!IsPostBack)
             {
-                GetDataSummary();
+                //GetDataSummary();
             }
 
         }
 
 
-        protected void GetDataSummary()
+        //protected void GetDataSummary()
 
-        {
-            var Result = Sp_Import("View",GetEmptyTvp());
-            DataTable dtb = Result.data;
+        //{
+        //    var Result = Sp_Import("View",GetEmptyTvp());
+        //    DataTable dtb = Result.data;
 
-            ViewState["myViewState"] = dtb;
-            TableImportBAP.DataSource = dtb;
-            TableImportBAP.DataBind();
+        //    ViewState["myViewState"] = dtb;
+        //    TableImportBAP.DataSource = dtb;
+        //    TableImportBAP.DataBind();
 
-            TableImportBAP.UseAccessibleHeader = true;
-            TableImportBAP.HeaderRow.TableSection = TableRowSection.TableHeader;
+        //    TableImportBAP.UseAccessibleHeader = true;
+        //    TableImportBAP.HeaderRow.TableSection = TableRowSection.TableHeader;
 
-        } 
+        //} 
 
 
 
@@ -53,7 +53,7 @@ namespace BAP_System
             
             ScriptManager.RegisterStartupScript(Page, Page.GetType(), "modal", "$('#mdlImport').modal();", true);
 
-            GetDataSummary();
+            //GetDataSummary();
 
 
         }
@@ -74,7 +74,7 @@ namespace BAP_System
             if (!FileUpload1.HasFile)
             {
 
-                string errorMessage = "Pilih File terlebih dahulu";
+                string errorMessage = "Select a file before import.";
                 Message = $@"
                             setTimeout(function() {{
                                 Errorsave('{HttpUtility.JavaScriptStringEncode(errorMessage)}');
@@ -89,7 +89,7 @@ namespace BAP_System
             if (ext != ".xlsx" && ext != ".xls" )
             {
 
-                string errorMessage = "Periksa file Extensi Excel, wajib (.xlsx atau .xls)";
+                string errorMessage = "Invalid file extension. Only .xlsx or .xls Excel files are accepted.";
 
                 Message = $@"
                             setTimeout(function() {{
@@ -137,7 +137,7 @@ namespace BAP_System
                 if (Result.isSuccess == true)
                 {
                     
-                    string errorMessage = "Import Berhasil," + "Dengan Jumlah data : " + Result.counting;
+                    string errorMessage = "Import successfully," + "Number of records : " + Result.counting;
                     Message = $@"
                             setTimeout(function() {{
                                 FuncSave('{HttpUtility.JavaScriptStringEncode(errorMessage)}');
@@ -149,10 +149,10 @@ namespace BAP_System
                 else
                 {
 
-                    GetDataSummary();
+                    //GetDataSummary();
 
-                    TableImportBAP.UseAccessibleHeader = true;
-                    TableImportBAP.HeaderRow.TableSection = TableRowSection.TableHeader;
+                    //TableImportBAP.UseAccessibleHeader = true;
+                    //TableImportBAP.HeaderRow.TableSection = TableRowSection.TableHeader;
 
 
                     string errorMessage = Result.ErrorRet;
@@ -171,7 +171,7 @@ namespace BAP_System
             catch (Exception ex)
             {
 
-                string errorMessage = "Gagal Import";
+                string errorMessage = "Import Failed!";
                 Message = $@"
                             setTimeout(function() {{
                                 Errorsave('{HttpUtility.JavaScriptStringEncode(errorMessage)}');
@@ -184,7 +184,7 @@ namespace BAP_System
             }
 
 
-            GetDataSummary();
+            //GetDataSummary();
 
 
 

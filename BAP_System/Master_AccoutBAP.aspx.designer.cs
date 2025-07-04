@@ -123,6 +123,15 @@ namespace BAP_System
         protected global::System.Web.UI.WebControls.Button btnCloseModalViewbs;
 
         /// <summary>
+        /// btNewBS control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btNewBS;
+
+        /// <summary>
         /// GL_id control.
         /// </summary>
         /// <remarks>
@@ -157,6 +166,15 @@ namespace BAP_System
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnCloseModalViewPL;
+
+        /// <summary>
+        /// btNewPL control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btNewPL;
 
         /// <summary>
         /// Dept_id control.

@@ -30,8 +30,8 @@
                 title: 'Failed!',
                 text: msg,
                 type: 'error',
-                showConfirmButton: false,
-                timer: 3000,
+                showConfirmButton: true,
+                timer: 10000,
                 customClass: 'swal-wide',
             });
         }
@@ -144,7 +144,7 @@
             <li class="active">&nbsp;&nbsp;Import BAP</li>
         </ol>
     </div>
-    <div class="container-fluid">
+<%--    <div class="container-fluid">
         <div class="row">
             <div class="col-md-12 col-sm-12 ">
                 <div class="card custom-card-body">
@@ -201,10 +201,51 @@
                 </div>
             </div>
         </div>
+    </div>--%>
+
+
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <div class="card custom-card-body">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body"> <!-- card 1  -->
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                    <div class="mt-4 d-flex gap-3">
+                                                        <div>
+                                                            <button type="button" onclick="<%=btNImport.ClientID %>.click()" class="btn btn-lg btn-success px-5" style="margin-right:10px; height: 50px; line-height: 1.2;">                                             
+                                                                Import
+                                                                <i class="fa fa-upload ml-1"></i>
+                                                            </button>
+                                                            <asp:Button runat="server" Style="display: none;" ID="btNImport" OnClick="btNImport_Click"></asp:Button>                                      
+                                                        </div>
+
+                                                        <div>
+                                                            <button type="button" onclick="<%=btnMenu.ClientID %>.click()" class="btn btn-lg buttonColor px-5" style="height: 50px; line-height: 1.2;">                                             
+                                                                Report Menu
+                                                                <i class="fa fa-arrow-right ml-1"></i>
+                                                            </button>
+                                                            <asp:Button runat="server" Style="display: none;" ID="btnMenu" OnClick="btNMenu_Click"></asp:Button>                                      
+                                                        </div>
+                                                    </div>
+
+                                             </div>                                              
+                                            </div>
+                                        </div> <!-- /.col-12 -->
+                                    </div> <!-- /.row no-gutters -->              
+                                 </div> <!-- /.card-body -->
+                           </div> <!-- /.card -->
+                        </div> <!-- /.col-xl-12 -->
+                    </div> <!-- /.row -->
+                </div> <!-- /.card-body -->
+            </div> <!-- /.card -->
+        </div>
     </div>
-
-    
-
 
     <div class="modal fade" id="mdlImport" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="false">
     <div class="modal-dialog modal-dialog-centered" role="document">

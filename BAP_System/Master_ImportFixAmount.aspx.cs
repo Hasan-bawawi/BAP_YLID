@@ -190,7 +190,7 @@ namespace BAP_System
             if (Spchek == true)
             {
 
-                string errorMessage = "Update Berhasil";
+                string errorMessage = "Successfully Updated";
                 Message = $@"
                             setTimeout(function() {{
                                 FuncSave('{HttpUtility.JavaScriptStringEncode(errorMessage)}');
@@ -216,7 +216,7 @@ namespace BAP_System
                 TableImportFIX.HeaderRow.TableSection = TableRowSection.TableHeader;
 
 
-                string errorMessage = "";
+                string errorMessage = "Update Failed!";
 
                 Message = $@"
                             setTimeout(function() {{
@@ -397,7 +397,7 @@ namespace BAP_System
 
                 GetDataFix();
 
-                string errorMessage = "Pilih File terlebih dahulu";
+                string errorMessage = "Select a file before import.";
                 Message = $@"
                             setTimeout(function() {{
                                 Errorsave('{HttpUtility.JavaScriptStringEncode(errorMessage)}');
@@ -416,7 +416,7 @@ namespace BAP_System
 
                 GetDataFix();
 
-                string errorMessage = "Periksa file Extensi Excel, wajib (.xlsx atau .xls)";
+                string errorMessage = "Invalid file extension. Only .xlsx or .xls Excel files are accepted.";
 
                 Message = $@"
                             setTimeout(function() {{
@@ -500,7 +500,7 @@ namespace BAP_System
 
                     GetDataFix();
 
-                    string errorMessage = "File tidak Sesuai template";
+                    string errorMessage = "Invalid file format";
 
                     Message = $@"
                             setTimeout(function() {{
@@ -524,7 +524,7 @@ namespace BAP_System
                 if (Result.isSuccess == true)
                 {
 
-                    string errorMessage = "Import Fixed Amont & GHQ Percetage berhasil," + "Dengan Jumlah data : " + Result.counting;
+                    string errorMessage = "Fixed Amount & GHQ Percentage import completed successfully," + "Number of records : " + Result.counting;
                     Message = $@"
                             setTimeout(function() {{
                                 FuncSave('{HttpUtility.JavaScriptStringEncode(errorMessage)}');
@@ -562,7 +562,7 @@ namespace BAP_System
             {
                 GetDataFix();
 
-                string errorMessage = "Gagal Import";
+                string errorMessage = "Import Failed";
                 Message = $@"
                             setTimeout(function() {{
                                 Errorsave('{HttpUtility.JavaScriptStringEncode(errorMessage)}');

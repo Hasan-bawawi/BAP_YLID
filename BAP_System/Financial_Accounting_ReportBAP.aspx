@@ -230,7 +230,7 @@
                   hideLoading();
                   document.cookie = "fileDownload=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
 
-                  Errorsave("Periksa kembali bulan yang dipilih, sesuaikan dengan periode yang aktif!");
+                  Errorsave("The selected month does not match the active period. Please check and adjust accordingly.");
 
                   /* location.reload();*/
                   setTimeout(() => {
@@ -263,8 +263,8 @@
               title: 'Failed!',
               text: message,
               type: 'error',
-              showConfirmButton: false,
-              timer: 3000
+              showConfirmButton: true,
+              timer: 10000
 
           });
       }

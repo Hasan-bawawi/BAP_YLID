@@ -28,6 +28,7 @@ namespace BAP_System.Models
         public bool CanCreate { get; set; }
         public bool CanEdit { get; set; }
         public bool CanView { get; set; }
+        public bool CanDelete { get; set; }
 
 
     }

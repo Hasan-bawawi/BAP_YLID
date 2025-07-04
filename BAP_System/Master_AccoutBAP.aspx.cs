@@ -47,9 +47,11 @@ namespace BAP_System
 
                 LinkButton btnEdit = (LinkButton)e.Row.FindControl("btnEdit");
                 LinkButton btnView = (LinkButton)e.Row.FindControl("btnView");
-               
+                LinkButton btnDelete = (LinkButton)e.Row.FindControl("btnDelete");
+
                 if (btnEdit != null) btnEdit.Visible = access.CanEdit;
                 if (btnView != null) btnView.Visible = access.CanView;
+                if (btnDelete != null) btnDelete.Visible = access.CanDelete;
 
                 if (TableAccount.EditIndex == e.Row.RowIndex)
                 {
@@ -143,9 +145,6 @@ namespace BAP_System
         }
 
 
-
-
-
         protected void TablePLaccount_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             ResultValue Result = new ResultValue();
@@ -158,17 +157,17 @@ namespace BAP_System
                 if (btnEditGL != null) btnEditGL.Visible = access.CanEdit;
 
 
-                if (TableGLaccount.EditIndex == e.Row.RowIndex)
+                if (TablePLaccount.EditIndex == e.Row.RowIndex)
                 {
 
                     DropDownList ddlGLbs = (DropDownList)e.Row.FindControl("ddlGLbs");
                     if (ddlGLbs != null)
                     {
-                        Guid IdBS_ = SafeParseGuid(TableGLaccount.DataKeys[e.Row.RowIndex].Values["IdBS"]);
+                        Guid IdBS_ = SafeParseGuid(TablePLaccount.DataKeys[e.Row.RowIndex].Values["IdBS"]);
 
                         IdBS.Value = IdBS_.ToString();
 
-                        Result = Sp_Account("Getbs");
+                        Result = Sp_Account("GetPL");
                         ddlGLbs.Items.Clear();
                         ddlGLbs.Items.Add(new System.Web.UI.WebControls.ListItem("<Select GL>", "0"));
                         foreach (DataRow dr in Result.Data.Rows)
@@ -187,13 +186,12 @@ namespace BAP_System
                     if (ddlbranch != null)
                     {
 
-
                         Result = Sp_Account("GetBranch");
                         ddlbranch.Items.Clear();
                         ddlbranch.Items.Add(new System.Web.UI.WebControls.ListItem("<Select Branch>", "0"));
                         foreach (DataRow dr in Result.Data.Rows)
                         {
-                            ddlbranch.Items.Add(new System.Web.UI.WebControls.ListItem(dr["NameBranch"].ToString(), dr["Branch_id"].ToString()));
+                            ddlbranch.Items.Add(new System.Web.UI.WebControls.ListItem(dr["CodeBranch"].ToString(), dr["Branch_id"].ToString()));
                         }
 
                         string selected = DataBinder.Eval(e.Row.DataItem, "Branch_id")?.ToString();
@@ -209,13 +207,13 @@ namespace BAP_System
 
                         Result = Sp_Account("GetDept");
                         ddldept.Items.Clear();
-                        ddldept.Items.Add(new System.Web.UI.WebControls.ListItem("<Select Branch>", "0"));
+                        ddldept.Items.Add(new System.Web.UI.WebControls.ListItem("<Select Dept>", "0"));
                         foreach (DataRow dr in Result.Data.Rows)
                         {
-                            ddlGLbs.Items.Add(new System.Web.UI.WebControls.ListItem(dr["NamaDept"].ToString(), dr["Department_id"].ToString()));
+                            ddldept.Items.Add(new System.Web.UI.WebControls.ListItem(dr["NamaDept"].ToString(), dr["Dept_id"].ToString()));
                         }
 
-                        string selected = DataBinder.Eval(e.Row.DataItem, "Department_id")?.ToString();
+                        string selected = DataBinder.Eval(e.Row.DataItem, "Dept_id")?.ToString();
                         if (!string.IsNullOrEmpty(selected) && ddldept.Items.FindByValue(selected) != null)
                             ddldept.SelectedValue = selected;
 
@@ -411,9 +409,19 @@ namespace BAP_System
             IdBS.Value = IdBS_.ToString();
             GL_id.Value = glbs.SelectedValue.ToString();
 
-            
-            Result = Sp_Account("UpdateBS");
 
+
+            if (IdBS_ == Guid.Empty)
+            {
+
+                Result = Sp_Account("SaveBS");
+            }
+            else
+            {
+                Result = Sp_Account("UpdateBS");
+
+
+            }
 
             if (Result.IsSuccess == true)
 
@@ -446,7 +454,14 @@ namespace BAP_System
                 {
                     TableGLaccount.EditIndex = (int)ViewState["EditIndex"];
                 }
-            
+
+                // Restore data if needed
+                if (ViewState["originalBS"] != null)
+                {
+                    ViewState["myViewStateGLBS"] = ((DataTable)ViewState["originalBS"]).Copy();
+                }
+
+
 
                 GetDataAccount();
 
@@ -480,7 +495,7 @@ namespace BAP_System
 
             GridViewRow row = TablePLaccount.Rows[rowIndex];
 
-            Guid IdBS_ = SafeParseGuid(TableGLaccount.DataKeys[e.RowIndex].Values["IdBS"]);
+            Guid IdBS_ = SafeParseGuid(TablePLaccount.DataKeys[e.RowIndex].Values["IdBS"]);
             DropDownList glbs = (DropDownList)row.FindControl("ddlGLbs");
             DropDownList glbranch = (DropDownList)row.FindControl("ddlbranch");
             DropDownList gldept = (DropDownList)row.FindControl("ddldept");
@@ -491,9 +506,18 @@ namespace BAP_System
             IdBS.Value = IdBS_.ToString();
             GL_id.Value = glbs.SelectedValue.ToString();
             Dept_id.Value = gldept.SelectedValue.ToString();
-            Branch_id.Value =glbranch.SelectedValue.ToString(); 
+            Branch_id.Value =glbranch.SelectedValue.ToString();
 
-            Result = Sp_Account("UpdatePL");
+
+            if (IdBS_ == Guid.Empty)
+            {
+                Result = Sp_Account("SavePL");
+            }
+            else
+            {
+                Result = Sp_Account("UpdatePL");
+
+            }
 
 
             if (Result.IsSuccess == true)
@@ -528,6 +552,12 @@ namespace BAP_System
                     TablePLaccount.EditIndex = (int)ViewState["EditIndex"];
                 }
 
+
+                // Restore data if needed
+                if (ViewState["originalPL"] != null)
+                {
+                    ViewState["myViewStateGLPL"] = ((DataTable)ViewState["originalPL"]).Copy();
+                }
 
                 GetDataAccount();
 
@@ -888,6 +918,231 @@ namespace BAP_System
         //}
 
 
+        protected void btnDelete_Click(object sender, EventArgs e)
+        {
+            ResultValue Result = new ResultValue();
+
+            string Message = "";
+
+            LinkButton btn = (LinkButton)sender;
+            int rowIndex = int.Parse(btn.CommandArgument);
+
+            GridViewRow row = TableAccount.Rows[rowIndex];
+          
+
+            Guid dirid = SafeParseGuid(TableAccount.DataKeys[rowIndex].Values["Account_id"]);
+            string TxtTypeAcc_ = TableAccount.DataKeys[rowIndex].Values["TypeAccount"].ToString();
+
+            
+            //DropDownList TxtTypeAcc_ = (DropDownList)row.FindControl("ddlTypeAcc");
+
+            Account_id.Value = dirid.ToString();
+            TxtTypeAcc.Value = TxtTypeAcc_;
+
+            Sp_Account("Delete");
+
+
+
+            
+            GetDataAccount();
+
+            TableAccount.UseAccessibleHeader = true;
+            TableAccount.HeaderRow.TableSection = TableRowSection.TableHeader;
+
+
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "error", "FuncRemove();", true);
+
+        }
+
+
+
+
+        protected void btnDeleteBS_Click(object sender, EventArgs e)
+        {
+            ResultValue Result = new ResultValue();
+
+            string Message = "";
+
+            LinkButton btn = (LinkButton)sender;
+            int rowIndex = int.Parse(btn.CommandArgument);
+
+            GridViewRow row = TableGLaccount.Rows[rowIndex];
+
+
+            Guid dirid = SafeParseGuid(TableGLaccount.DataKeys[rowIndex].Values["IdBS"]);
+
+
+
+            IdBS.Value = dirid.ToString();
+
+            Sp_Account("DeleteBS");
+
+
+            GetDataBs();
+            GetDataAccount();
+
+            TableGLaccount.UseAccessibleHeader = true;
+            TableGLaccount.HeaderRow.TableSection = TableRowSection.TableHeader;
+
+
+            Message = $@"
+                            setTimeout(function() {{
+                                FuncRemove();
+                            }}, 500);
+                            $('#mdlViewsBS').modal('show');";
+
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "showErrorWithModal", Message, true);
+
+            //ScriptManager.RegisterStartupScript(Page, Page.GetType(), "modalAndError", @"$('#mdlViewsBS').modal(); FuncRemove();", true);
+
+        }
+
+
+        protected void btnDeletePL_Click(object sender, EventArgs e)
+        {
+            ResultValue Result = new ResultValue();
+
+            string Message = "";
+
+            LinkButton btn = (LinkButton)sender;
+            int rowIndex = int.Parse(btn.CommandArgument);
+
+            GridViewRow row = TablePLaccount.Rows[rowIndex];
+
+
+            Guid dirid = SafeParseGuid(TablePLaccount.DataKeys[rowIndex].Values["IdBS"]);
+
+
+            IdBS.Value = dirid.ToString();
+
+            Sp_Account("DeletePL");
+
+            GetDataPL();
+            GetDataAccount();
+
+            TablePLaccount.UseAccessibleHeader = true;
+            TablePLaccount.HeaderRow.TableSection = TableRowSection.TableHeader;
+
+            Message = $@"
+                            setTimeout(function() {{
+                                FuncRemove();
+                            }}, 500);
+                            $('#mdlViewsPL').modal('show');";
+
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "showErrorWithModal", Message, true);
+
+        }
+
+
+
+
+
+        protected void btNewBS_Click(object sender, EventArgs e)
+        {
+
+            DataTable dt = ViewState["myViewStateGLBS"] as DataTable;
+
+            ViewState["originalBS"] = dt.Copy();
+
+
+            // Jika null atau belum ada kolom, inisialisasi tabel dan kolom
+            if (dt == null || dt.Columns.Count == 0)
+            {
+                dt = new DataTable("Table1");
+                dt.Columns.Add("IdBS", typeof(Guid));
+                dt.Columns.Add("GL_id", typeof(Guid));
+             
+            }
+
+            // Cek apakah sudah ada baris kosong
+            bool hasEmptyRow = dt.AsEnumerable().Any(row =>
+                string.IsNullOrWhiteSpace(row["GL_id"]?.ToString())
+                
+            );
+
+            if (!hasEmptyRow)
+            {
+                DataRow newRow = dt.NewRow();
+                newRow["IdBS"] = Guid.Empty;
+                newRow["GL_id"] = Guid.Empty;
+              
+
+                dt.Rows.InsertAt(newRow, 0);
+            }
+
+            // Simpan ke ViewState dan binding
+            ViewState["myViewStateGLBS"] = dt;
+            TableGLaccount.EditIndex = 0;
+            TableGLaccount.DataSource = dt;
+            TableGLaccount.DataBind();
+
+            ScriptManager.RegisterStartupScript(Page, Page.GetType(), "modal", @"
+                    $('#mdlViewsBS').modal();
+                    disableEditButtons();", true);
+
+            GetDataAccount();
+
+            TableGLaccount.UseAccessibleHeader = true;
+            TableGLaccount.HeaderRow.TableSection = TableRowSection.TableHeader;
+
+
+        }
+
+
+
+        protected void btNewPL_Click(object sender, EventArgs e)
+        {
+
+            DataTable dt = ViewState["myViewStateGLPL"] as DataTable;
+
+            ViewState["originalPL"] = dt.Copy();
+
+
+            // Jika null atau belum ada kolom, inisialisasi tabel dan kolom
+            if (dt == null || dt.Columns.Count == 0)
+            {
+                dt = new DataTable("Table1");
+                dt.Columns.Add("IdBS", typeof(Guid));
+                dt.Columns.Add("GL_id", typeof(Guid));
+                dt.Columns.Add("Branch_id", typeof(Guid));
+                dt.Columns.Add("Dept_id", typeof(Guid));
+
+            }
+
+            // Cek apakah sudah ada baris kosong
+            bool hasEmptyRow = dt.AsEnumerable().Any(row =>
+                string.IsNullOrWhiteSpace(row["GL_id"]?.ToString())
+
+            );
+
+            if (!hasEmptyRow)
+            {
+                DataRow newRow = dt.NewRow();
+                newRow["IdBS"] = Guid.Empty;
+                newRow["GL_id"] = Guid.Empty;
+                newRow["Branch_id"] = Guid.Empty;
+                newRow["Dept_id"] = Guid.Empty;
+
+                dt.Rows.InsertAt(newRow, 0);
+            }
+
+            // Simpan ke ViewState dan binding
+            ViewState["myViewStateGLPL"] = dt;
+            TablePLaccount.EditIndex = 0;
+            TablePLaccount.DataSource = dt;
+            TablePLaccount.DataBind();
+
+            ScriptManager.RegisterStartupScript(Page, Page.GetType(), "modal", @"
+                    $('#mdlViewsPL').modal();
+                    disableEditButtons();", true);
+
+            GetDataAccount();
+
+            TablePLaccount.UseAccessibleHeader = true;
+            TablePLaccount.HeaderRow.TableSection = TableRowSection.TableHeader;
+
+
+        }
 
 
 

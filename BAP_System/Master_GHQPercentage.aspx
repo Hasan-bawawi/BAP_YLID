@@ -188,7 +188,7 @@
                                                     DataKeyNames="Id">
                                                         <HeaderStyle BackColor="#06183d" ForeColor="White" />
                                                         <Columns>
-                                                              <asp:TemplateField HeaderText="Action" >
+                                                              <asp:TemplateField HeaderText="Action" ItemStyle-Width="100px">
                                                                 <ItemTemplate>
                                                                     <div Class="action-cell">
                                                                          <asp:LinkButton 
@@ -245,7 +245,7 @@
                                                                 </EditItemTemplate>
                                                         </asp:TemplateField>
                                                         <asp:BoundField DataField="Periode" HeaderText="Periode" ReadOnly="True"  DataFormatString="{0:MMMM-yyyy}"/>
-                                                        <asp:BoundField DataField="CreatedDate" HeaderText="Create Date" ReadOnly="True" DataFormatString="{0:dd-MMMM-yyyy hh:mm:ss tt}"/>
+<%--                                                        <asp:BoundField DataField="CreatedDate" HeaderText="Create Date" ReadOnly="True" DataFormatString="{0:dd-MMMM-yyyy hh:mm:ss tt}"/>--%>
                                                         </Columns>
                                                     </asp:GridView>
                                             </div>

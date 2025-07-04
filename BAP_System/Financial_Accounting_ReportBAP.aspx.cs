@@ -243,9 +243,9 @@ namespace BAP_System
                         Expires = DateTime.Now.AddMinutes(5)
                     });
 
-                    string message = "Periksa kembali bulan yang dipilih, sesuaikan dengan periode yang aktif!";
-                    string js = $"Errorsave('{message}');";
-                    ScriptManager.RegisterStartupScript(this, this.GetType(), "periodeError", js, true);
+                    //string message = "Errorsave";
+                    //string js = $"Errorsave('{message}');";
+                    //ScriptManager.RegisterStartupScript(this, this.GetType(), "periodeError", js, true);
 
                     return; // Sudahi eksekusi tapi tidak memaksa berhenti seperti Response.End
                 }

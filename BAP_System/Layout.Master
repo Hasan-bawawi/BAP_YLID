@@ -73,11 +73,43 @@
 <link href="css/scrollpagestyle.css" rel="stylesheet" />
 
 <style>
-   body, form {
-        margin: 0 !important;
-        padding: 0 !important;
-        background-color: #06183d; 
+
+ body, form {
+      margin: 0 !important;
+      padding: 0 !important;
+      background-color: #06183d; 
+  }
+
+.profile-align {
+    display: inline-flex;
+    align-items: center; /* agar sejajar vertikal */
+    gap: 6px; /* jarak antara ikon dan nama */
+}
+
+.blinking-circle {
+    width: 10px;
+    height: 10px;
+    background-color: green;
+    border-radius: 50%;
+    animation: blink 1s infinite;
+    display: inline-block;
+    margin-bottom: 8px;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+    @keyframes blink {
+        0%, 100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0;
+        }
     }
+
 </style>
 
 </head>
@@ -177,13 +209,23 @@
                         <br />
                     </div>
                     <div class="mainnav-profile">
-                        <div class="profile-wrap text-center">
+<%--                        <div class="profile-wrap text-center">
                             <a href="#profile-nav" class="box-block" data-toggle="collapse" aria-expanded="false">
                                 <span class="nav-text">
                                     <label runat="server" id="lbFullname" style="color: white;"></label>
                                 </span>
                             </a>
-                        </div>
+                        </div>--%>
+                 <div class="profile-wrap text-center">
+                    <a href="#profile-nav" class="box-block profile-align" data-toggle="collapse" aria-expanded="false">
+                        <span class="blinking-circle" ></span>
+                        <span class="nav-text">
+                            <label runat="server" id="lbFullname" style="color: white;"></label>
+                        </span>
+                    </a>
+                </div>
+
+
                     </div>
                     <div class="mainnav-profile">
                         <div class="profile-wrap text-center">

@@ -14,6 +14,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentFormat.OpenXml.Bibliography;
 using System.Security.Principal;
 using ClosedXML.Excel;
+using BAP_System.Models;
 
 
 namespace BAP_System
@@ -68,9 +69,11 @@ namespace BAP_System
                 var access = GetAccessForPage();
 
                 LinkButton btnEdit = (LinkButton)e.Row.FindControl("btnEdit");
+                LinkButton btnDelete = (LinkButton)e.Row.FindControl("btnDelete");
                 //LinkButton btnView = (LinkButton)e.Row.FindControl("btnView");
 
                 if (btnEdit != null) btnEdit.Visible = access.CanEdit;
+                if (btnDelete != null) btnDelete.Visible = access.CanDelete;
                 //if (btnView != null) btnView.Visible = access.CanView;
             }
 
@@ -225,7 +228,42 @@ namespace BAP_System
 
         }
 
+        protected void btnDelete_Click(object sender, EventArgs e)
+        {
+            ResultValue Result = new ResultValue();
 
+            string Message = "";
+
+            LinkButton btn = (LinkButton)sender;
+            int rowIndex = int.Parse(btn.CommandArgument);
+
+            GridViewRow row = TableBranch.Rows[rowIndex];
+
+            Guid dirid = SafeParseGuid(TableBranch.DataKeys[rowIndex].Values["Branch_id"]);
+
+            Branch_id.Value = dirid.ToString();
+
+            Sp_Branch("Delete");
+
+            GetDataBranch();
+
+            TableBranch.UseAccessibleHeader = true;
+            TableBranch.HeaderRow.TableSection = TableRowSection.TableHeader;
+
+
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "error", "FuncRemove();", true);
+
+        }
+
+        private Guid SafeParseGuid(object value)
+        {
+            if (value == null) return Guid.Empty;
+
+            var str = value.ToString();
+            return !string.IsNullOrWhiteSpace(str) && Guid.TryParse(str, out var result)
+                ? result
+                : Guid.Empty;
+        }
 
         public (bool isSuccess, string identity, DataTable data) Sp_Branch(string Actionname)
         {

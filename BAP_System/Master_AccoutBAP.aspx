@@ -53,6 +53,18 @@
             //});
         }
 
+        function FuncRemove() {
+            swal({
+                title: 'Remove Success',
+                text: 'Successfully Removed',
+                timer: 3000,
+                type: 'success',
+                showConfirmButton: false,
+                html: true,
+            },
+            );
+        }
+
 
         function FuncUpdate() {
             swal({
@@ -68,6 +80,65 @@
                 }
             );
         }
+
+        function confirmDelete(linkButton) {
+
+
+            var href = linkButton.getAttribute("href");
+            var match = href.match(/__doPostBack\('([^']+)'/);
+            if (match && match.length > 1) {
+                var postBackTarget = match[1];
+                console.log("PostBack Target:", postBackTarget);
+            }
+            swal({
+
+                title: 'Are you sure?',
+                text: "This data will be marked inactive and detail GL in this code will be inactive to.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#d33',
+                showCloseButton: true,
+
+            }, function (willDelete) {
+                if (willDelete) {
+                    __doPostBack(postBackTarget, '');
+                }
+            });
+
+            return false;
+        }
+
+        function confirmDeleteGL(linkButton) {
+
+
+            var href = linkButton.getAttribute("href");
+            var match = href.match(/__doPostBack\('([^']+)'/);
+            if (match && match.length > 1) {
+                var postBackTarget = match[1];
+                console.log("PostBack Target:", postBackTarget);
+            }
+            swal({
+
+                title: 'Are you sure?',
+                text: "This data will be marked inactive.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#d33',
+                showCloseButton: true,
+
+            }, function (willDelete) {
+                if (willDelete) {
+                    __doPostBack(postBackTarget, '');
+                }
+            });
+
+            return false;
+        }
+
 
     </script>
    <!-- script baru  -->
@@ -121,6 +192,82 @@
             }
         });
       });
+
+
+      function validpl(btn) {
+
+          var row = btn.closest("tr");
+
+          var dropdown = row.querySelector("#ddlGLbs");
+          var dropdownb = row.querySelector("#ddlbranch");
+          var dropdownc = row.querySelector("#ddldept");
+
+          var isValid = true;
+
+
+          [dropdown, dropdownb, dropdownc].forEach(function (input) {
+              if (input) {
+                  input.style.border = "";
+
+              }
+          });
+
+
+          if (dropdown) {
+              dropdown.style.border = "";
+              var btnVisual = row.querySelector(".bootstrap-select button");
+              if (btnVisual) btnVisual.style.border = "";
+          }
+
+          if (dropdownb) {
+              dropdownb.style.border = "";
+              var btnVisual = row.querySelector(".bootstrap-select button");
+              if (btnVisual) btnVisual.style.border = "";
+          }
+
+          if (dropdownc) {
+              dropdownc.style.border = "";
+              var btnVisual = row.querySelector(".bootstrap-select button");
+              if (btnVisual) btnVisual.style.border = "";
+          }
+
+          if (!dropdown || dropdown.value === "" || dropdown.value === "0") {
+              dropdown.style.border = "3px solid red";
+              isValid = false;
+
+              // Ambil visual button dari dropdown ini (ddlemployees)
+              var btnVisualEmp = dropdown.closest('td').querySelector(".bootstrap-select button");
+              if (btnVisualEmp) {
+                  btnVisualEmp.style.border = "3px solid red";
+              }
+          }
+
+          if (!dropdownb || dropdownb.value === "" || dropdownb.value === "0") {
+              dropdownb.style.border = "3px solid red";
+              isValid = false;
+
+              // Ambil visual button dari dropdown ini (ddlRolename)
+              var btnVisualRole = dropdownb.closest('td').querySelector(".bootstrap-select button");
+              if (btnVisualRole) {
+                  btnVisualRole.style.border = "3px solid red";
+              }
+          }
+
+          if (!dropdownc || dropdownc.value === "" || dropdownc.value === "0") {
+              dropdownc.style.border = "3px solid red";
+              isValid = false;
+
+              // Ambil visual button dari dropdown ini (ddlRolename)
+              var btnVisualRole = dropdownc.closest('td').querySelector(".bootstrap-select button");
+              if (btnVisualRole) {
+                  btnVisualRole.style.border = "3px solid red";
+              }
+          }
+
+          return isValid;
+      }
+
+
 
 
 
@@ -185,16 +332,17 @@
 
       function validgl(btn) {
 
-          var row = btn.closest("tr");
           debugger
-          var glname = row.querySelector("#txtGLName");
-          var glaccount = row.querySelector("#txtGLAccount");
+
+          var row = btn.closest("tr");
+
+          
           var glbs = row.querySelector("#ddlGLbs");
 
           var isValid = true;
 
 
-          [glname, glaccount, glbs].forEach(function (input) {
+          [glbs].forEach(function (input) {
               if (input) input.style.border = "";
           });
 
@@ -204,18 +352,7 @@
               if (btnVisual) btnVisual.style.border = "";
           }
 
-          if (!glname || glname.value.trim() === "") {
-              glname.style.border = "2px solid red";
-              isValid = false;
-          }
-
-          if (!glaccount || glaccount.value.trim() === "") {
-              glaccount.style.border = "2px solid red";
-              isValid = false;
-          }
-
-
-          if (!glbs || glbs.value === "") {
+          if (!glbs || glbs.value === "0") {
               glbs.style.border = "3px solid red";
               isValid = false;
 
@@ -231,6 +368,7 @@
       }
 
       function disableEditButtons() {
+
           var editButtons = document.querySelectorAll('.edit-btn');
           editButtons.forEach(function (btn) {
               btn.disabled = true;
@@ -240,13 +378,13 @@
           });
 
           // Disable all delete buttons
-          var deleteButtons = document.querySelectorAll('.delete-btn');
-          deleteButtons.forEach(function (btn) {
-              btn.disabled = true;
-              btn.classList.add('disabled');
-              btn.style.pointerEvents = "none";
-              btn.style.opacity = "0.5";
-          });
+          //var deleteButtons = document.querySelectorAll('.delete-btn');
+          //deleteButtons.forEach(function (btn) {
+          //    btn.disabled = true;
+          //    btn.classList.add('disabled');
+          //    btn.style.pointerEvents = "none";
+          //    btn.style.opacity = "0.5";
+          //});
       }
 
       function enableEditButtons() {
@@ -257,13 +395,13 @@
               btn.style.pointerEvents = "";
               btn.style.opacity = "";
           });
-          var deleteButtons = document.querySelectorAll('.delete-btn');
-          deleteButtons.forEach(function (btn) {
-              btn.disabled = false;
-              btn.classList.remove('disabled');
-              btn.style.pointerEvents = "";
-              btn.style.opacity = "";
-          });
+          //var deleteButtons = document.querySelectorAll('.delete-btn');
+          //deleteButtons.forEach(function (btn) {
+          //    btn.disabled = false;
+          //    btn.classList.remove('disabled');
+          //    btn.style.pointerEvents = "";
+          //    btn.style.opacity = "";
+          //});
       }
 
 
@@ -513,13 +651,13 @@
                                                 OnRowCancelingEdit="TableAccount_RowCancelingEdit"
                                                 OnRowUpdating="TableAccount_RowUpdating"
                                                 OnRowDataBound="TableAccount_RowDataBound"
-                                                DataKeyNames="Account_id">
+                                                DataKeyNames="Account_id,TypeAccount">
 
                                                         <HeaderStyle BackColor="#06183d" ForeColor="White" />
                                                         <Columns>
                                                          <%--   <asp:CommandField ShowEditButton="True"/>--%>
 
-                                                          <asp:TemplateField HeaderText="Action" >
+                                                          <asp:TemplateField HeaderText="Action"  ItemStyle-Width="100px" >
                                                             <ItemTemplate>
                                                                 <div Class="action-cell">
                                                                      <asp:LinkButton 
@@ -533,11 +671,14 @@
                                                                         ID="btnView" 
                                                                         runat="server" 
                                                                         CommandName="View" 
-                                                                        CssClass="btn mb-1 buttonColorx ml-2 delete-btn"
+                                                                        CssClass="btn mb-1 buttonColorx ml-2 edit-btn"
                                                                         OnClick="btnview_Click"
                                                                         CommandArgument='<%# Eval("TypeAccount") %>'>
                                                                         <i class="fa fa-eye"></i> 
                                                                     </asp:LinkButton>
+                                                                 <asp:LinkButton  ID="btnDelete"  runat="server"  CommandName="Hapus"  CommandArgument="<%# Container.DataItemIndex %>"  CssClass="btn mb-1 btn-danger edit-btn ml-2"  OnClick="btnDelete_Click"  OnClientClick="return confirmDelete(this);"  ToolTip="Remove">
+                                                                    <i class="fa  fa-trash"></i>
+                                                                 </asp:LinkButton>
                                                                 </div>
                                                                
                                                             </ItemTemplate>
@@ -598,7 +739,7 @@
                                                                  </div>
                                                              </EditItemTemplate>
                                                          </asp:TemplateField>
-                                                       <asp:TemplateField HeaderText="Type Account" HeaderStyle-Width="200px" ItemStyle-Width="200px" >
+                                                       <asp:TemplateField HeaderText="Type Report" HeaderStyle-Width="200px" ItemStyle-Width="200px" >
                                                              <ItemTemplate>
                                                                  <%# Eval("TypeReport") %>
                                                              </ItemTemplate>
@@ -619,7 +760,7 @@
                                                                  </div>
                                                              </EditItemTemplate>
                                                          </asp:TemplateField>
-                                                     <asp:BoundField DataField="CreatedDate" HeaderText="Create Date" ReadOnly="True" DataFormatString="{0:dd-MMMM-yyyy hh:mm:ss tt}" />
+<%--                                                     <asp:BoundField DataField="CreatedDate" HeaderText="Create Date" ReadOnly="True" DataFormatString="{0:dd-MMMM-yyyy hh:mm:ss tt}" />--%>
                                                         </Columns>
                                                     </asp:GridView>
                                             </div>
@@ -744,6 +885,7 @@
                             <div class="control-group">
                                 <div class="row">
                                     <div class='col-sm-12'>
+                                        <asp:Button runat="server" ID="btNewBS" CssClass="btn buttonColor btn-icon" Text=" Add New" OnClick="btNewBS_Click" />
                                     </div>
                                     <div class='col-sm-12'>
                                         <div class="table-responsive">
@@ -762,7 +904,7 @@
 
                                                     <HeaderStyle BackColor="#06183d" ForeColor="White" />
                                                     <Columns>
-                                                        <asp:TemplateField HeaderText="Action">
+                                                        <asp:TemplateField HeaderText="Action" ItemStyle-Width="100px">
                                                             <ItemTemplate>
                                                                 <div Class="action-cell">
                                                                     <asp:LinkButton ID="btnEditGL"
@@ -771,6 +913,9 @@
                                                                                     CssClass="btn mb-1 buttonColor  ml-2 edit-btn">
                                                                         <i class="fa fa-pencil"></i>
                                                                     </asp:LinkButton>
+                                                                 <asp:LinkButton  ID="btnDeleteBS"  runat="server"  CommandName="Hapus"  CommandArgument="<%# Container.DataItemIndex %>"  CssClass="btn mb-1 btn-danger edit-btn ml-2"  OnClick="btnDeleteBS_Click"  OnClientClick="return confirmDeleteGL(this);"  ToolTip="Remove">
+                                                                    <i class="fa  fa-trash"></i>
+                                                                 </asp:LinkButton>
                                                                 </div>
                                                             </ItemTemplate>
                                                             <EditItemTemplate>
@@ -804,7 +949,7 @@
                                                                 </div>
                                                             </EditItemTemplate>
                                                         </asp:TemplateField>   
-                                                       <asp:BoundField DataField="CreatedDate" HeaderText="Created Date" ReadOnly="True" DataFormatString="{0:dd-MMMM-yyyy hh:mm:ss tt}" />
+<%--                                                       <asp:BoundField DataField="CreatedDate" HeaderText="Created Date" ReadOnly="True" DataFormatString="{0:dd-MMMM-yyyy hh:mm:ss tt}" />--%>
                                                     </Columns>
                                                 </asp:GridView>
                                         </div>
@@ -843,6 +988,7 @@
                             <div class="control-group">
                                 <div class="row">
                                     <div class='col-sm-12'>
+                                          <asp:Button runat="server" ID="btNewPL" CssClass="btn buttonColor btn-icon" Text=" Add New" OnClick="btNewPL_Click" />
                                     </div>
                                     <div class='col-sm-12'>
                                         <div class="table-responsive">
@@ -861,7 +1007,7 @@
 
                                                     <HeaderStyle BackColor="#06183d" ForeColor="White" />
                                                     <Columns>
-                                                        <asp:TemplateField HeaderText="Action">
+                                                        <asp:TemplateField HeaderText="Action" ItemStyle-Width="100px">
                                                             <ItemTemplate>
                                                                 <div Class="action-cell">
                                                                     <asp:LinkButton ID="btnEditGL"
@@ -870,6 +1016,9 @@
                                                                                     CssClass="btn mb-1 buttonColor  ml-2 edit-btn">
                                                                         <i class="fa fa-pencil"></i>
                                                                     </asp:LinkButton>
+                                                                     <asp:LinkButton  ID="btnDeletePL"  runat="server"  CommandName="Hapus"  CommandArgument="<%# Container.DataItemIndex %>"  CssClass="btn mb-1 btn-danger edit-btn ml-2"  OnClick="btnDeletePL_Click"  OnClientClick="return confirmDeleteGL(this);"  ToolTip="Remove">
+                                                                    <i class="fa  fa-trash"></i>
+                                                                 </asp:LinkButton>
                                                                 </div>
                                                             </ItemTemplate>
                                                             <EditItemTemplate>
@@ -936,8 +1085,8 @@
                                                                     </asp:DropDownList>
                                                                     </div>
                                                                 </EditItemTemplate>
-                                                            </asp:TemplateField>
-                                                       <asp:BoundField DataField="CreatedDate" HeaderText="Created Date" ReadOnly="True" DataFormatString="{0:dd-MMMM-yyyy hh:mm:ss tt}" />
+                                                        </asp:TemplateField>
+<%--                                                       <asp:BoundField DataField="CreatedDate" HeaderText="Created Date" ReadOnly="True" DataFormatString="{0:dd-MMMM-yyyy hh:mm:ss tt}" />--%>
                                                     </Columns>
                                                 </asp:GridView>
                                         </div>

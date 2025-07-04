@@ -14,6 +14,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentFormat.OpenXml.Bibliography;
 using System.Security.Principal;
 using ClosedXML.Excel;
+using BAP_System.Models;
 
 
 namespace BAP_System
@@ -66,10 +67,11 @@ namespace BAP_System
                 var access = GetAccessForPage();
 
                 LinkButton btnEdit = (LinkButton)e.Row.FindControl("btnEdit");
+                LinkButton btnDelete = (LinkButton)e.Row.FindControl("btnDelete");
                 //LinkButton btnView = (LinkButton)e.Row.FindControl("btnView");
 
                 if (btnEdit != null) btnEdit.Visible = access.CanEdit;
-                //if (btnView != null) btnView.Visible = access.CanView;
+                if (btnDelete != null) btnDelete.Visible = access.CanDelete;
             }
 
 
@@ -220,6 +222,42 @@ namespace BAP_System
         }
 
 
+        protected void btnDelete_Click(object sender, EventArgs e)
+        {
+            ResultValue Result = new ResultValue();
+
+            string Message = "";
+
+            LinkButton btn = (LinkButton)sender;
+            int rowIndex = int.Parse(btn.CommandArgument);
+
+            GridViewRow row = TableBussinesMode.Rows[rowIndex];
+
+            Guid dirid = SafeParseGuid(TableBussinesMode.DataKeys[rowIndex].Values["BussinesMode_id"]);
+
+            BussinesMode_id.Value = dirid.ToString();
+
+            Sp_bussinesmode("Delete");
+
+            GetDataBussinesmode();
+
+            TableBussinesMode.UseAccessibleHeader = true;
+            TableBussinesMode.HeaderRow.TableSection = TableRowSection.TableHeader;
+
+
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "error", "FuncRemove();", true);
+
+        }
+
+        private Guid SafeParseGuid(object value)
+        {
+            if (value == null) return Guid.Empty;
+
+            var str = value.ToString();
+            return !string.IsNullOrWhiteSpace(str) && Guid.TryParse(str, out var result)
+                ? result
+                : Guid.Empty;
+        }
 
         public (bool isSuccess, string identity, DataTable data) Sp_bussinesmode(string Actionname)
         {

@@ -36,7 +36,7 @@
             });
 
 
-        }
+        }SS
 
         function FuncUpdate() {
             swal({
@@ -69,7 +69,7 @@
           var isValid = true;
 
 
-          [NameDept, CodeDept, dropdown, dropdownb].forEach(function (input) {
+          [NameDept, CodeDept, dropdownb].forEach(function (input) {
               if (input) {
                   input.style.border = "";
                   
@@ -100,28 +100,28 @@
           }
 
 
-          if (!dropdown || dropdown.value === "") {
-              dropdown.style.border = "3px solid red"; 
+         
+          if (!dropdown || dropdown.value === "" || dropdown.value === "0") {
+              dropdown.style.border = "3px solid red";
               isValid = false;
 
-             
-              var btnVisual = row.querySelector(".bootstrap-select button");
-              if (btnVisual) {
-                  btnVisual.style.border = "3px solid red";  
+              // Ambil visual button dari dropdown ini (ddlemployees)
+              var btnVisualEmp = dropdown.closest('td').querySelector(".bootstrap-select button");
+              if (btnVisualEmp) {
+                  btnVisualEmp.style.border = "3px solid red";
               }
           }
 
-
-          if (!dropdownb || dropdownb.value === "") {
+          if (!dropdownb || dropdownb.value === "" || dropdownb.value === "0") {
               dropdownb.style.border = "3px solid red";
               isValid = false;
 
-              var btnVisual = row.querySelector(".bootstrap-select button");
-              if (btnVisual) {
-                  btnVisual.style.border = "3px solid red";
+              // Ambil visual button dari dropdown ini (ddlRolename)
+              var btnVisualRole = dropdownb.closest('td').querySelector(".bootstrap-select button");
+              if (btnVisualRole) {
+                  btnVisualRole.style.border = "3px solid red";
               }
           }
-
 
           return isValid;
       }

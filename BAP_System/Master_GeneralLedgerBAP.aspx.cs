@@ -50,7 +50,7 @@ namespace BAP_System
                 LinkButton btnEditGL = (LinkButton)e.Row.FindControl("btnEditGL");
                 LinkButton btnDeleteGL = (LinkButton)e.Row.FindControl("btnDeleteGL");
                 if (btnEditGL != null) btnEditGL.Visible = access.CanEdit;
-                if (btnDeleteGL != null) btnDeleteGL.Visible = access.CanEdit;
+                if (btnDeleteGL != null) btnDeleteGL.Visible = access.CanDelete;
 
 
                 if (TableGLaccount.EditIndex == e.Row.RowIndex)

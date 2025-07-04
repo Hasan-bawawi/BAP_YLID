@@ -112,7 +112,7 @@ namespace BAP_System
                         cmd.Parameters.AddWithValue("@CanCreate", rma.CanCreate);
                         cmd.Parameters.AddWithValue("@CanEdit", rma.CanEdit);
                         cmd.Parameters.AddWithValue("@CanView", rma.CanView);
-                        
+                        cmd.Parameters.AddWithValue("@Candelete", rma.CanDelete);
                         cmd.Parameters.AddWithValue("@RoleName", txtRoleName.Value ?? (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("@CreateBy", Session["nik"].ToString() /*"TES"*/); 
                         cmd.Parameters.AddWithValue("@ModifiedBy", Session["nik"].ToString() /* "TES"*/);
@@ -206,6 +206,7 @@ namespace BAP_System
                 dt.Columns.Add("CanCreate", typeof(bool));
                 dt.Columns.Add("CanEdit", typeof(bool));
                 dt.Columns.Add("CanView", typeof(bool));
+                dt.Columns.Add("CanDelete", typeof(bool));
                 dt.Columns.Add("CretedDateRMA", typeof(DateTime));
             }
 
@@ -215,6 +216,7 @@ namespace BAP_System
                 && row.Field<bool?>("CanCreate") != true
                 && row.Field<bool?>("CanEdit") != true
                 && row.Field<bool?>("CanView") != true
+                && row.Field<bool?>("CanDelete") != true
 
             );
 
@@ -226,6 +228,7 @@ namespace BAP_System
                 newRow["CanCreate"] = false;
                 newRow["CanEdit"] = false;
                 newRow["CanView"] = false;
+                newRow["CanDelete"] = false;
                 newRow["CretedDateRMA"] = DateTime.Now;
 
                 dt.Rows.InsertAt(newRow, 0);
@@ -567,7 +570,7 @@ namespace BAP_System
                             ddlModuleName.Enabled = false;
                         }
                     }
-                }
+                }   
 
 
             }
@@ -602,6 +605,7 @@ namespace BAP_System
                rma.CanCreate = ((System.Web.UI.WebControls.CheckBox)row.FindControl("CanCreate")).Checked;
                rma.CanEdit =  ((System.Web.UI.WebControls.CheckBox)row.FindControl("CanEdit")).Checked;
                rma.CanView =  ((System.Web.UI.WebControls.CheckBox)row.FindControl("CanView")).Checked;
+               rma.CanDelete = ((System.Web.UI.WebControls.CheckBox)row.FindControl("CanDelete")).Checked;
                DropDownList ddlModuleName_ = (DropDownList)row.FindControl("ddlModuleName");
                Guid menuid = Guid.Parse(ddlModuleName_.SelectedValue);
 

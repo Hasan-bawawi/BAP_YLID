@@ -613,8 +613,7 @@
                                                                     </div>
                                                                 </EditItemTemplate>
                                                             </asp:TemplateField>
-
-
+                                                        
                                                             <asp:TemplateField HeaderText="CanEdit" HeaderStyle-HorizontalAlign="Center">
                                                                 <HeaderStyle CssClass="center-header" HorizontalAlign="Center" />
                                                                 <ItemTemplate>
@@ -641,7 +640,21 @@
                                                                     <asp:CheckBox ID="CanView" runat="server" Checked='<%# Convert.ToBoolean(Eval("CanView")) %>' />
                                                                     </div>
                                                                 </EditItemTemplate>
-                                                            </asp:TemplateField>                                                       
+                                                            </asp:TemplateField>    
+                                                           <asp:TemplateField HeaderText="CanDelete" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
+                                                                <HeaderStyle CssClass="center-header" HorizontalAlign="Center" />
+                                                                <%--<ItemStyle HorizontalAlign="Center" />--%>
+                                                                <ItemTemplate>
+                                                                    <div class="action-cell">
+                                                                        <asp:CheckBox ID="CanDelete" runat="server" Checked='<%# Convert.ToBoolean(Eval("CanDelete")) %>' Enabled="false" />
+                                                                    </div>
+                                                                </ItemTemplate>
+                                                                <EditItemTemplate>
+                                                                    <div class="action-cell">
+                                                                        <asp:CheckBox ID="CanDelete" runat="server" Checked='<%# Convert.ToBoolean(Eval("CanDelete")) %>' />
+                                                                    </div>
+                                                                </EditItemTemplate>
+                                                            </asp:TemplateField>
                                                        <asp:BoundField DataField="CretedDateRMA" HeaderText="Created Date" ReadOnly="True" DataFormatString="{0:dd-MMMM-yyyy hh:mm:ss tt}" />
                                                     </Columns>
                                                 </asp:GridView>

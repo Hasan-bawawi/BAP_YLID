@@ -10,6 +10,7 @@ using System.Web.UI.WebControls;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using BAP_System.Models;
 
 
 namespace BAP_System
@@ -118,9 +119,11 @@ namespace BAP_System
                 var access = GetAccessForPage();
 
                 LinkButton btnEdit = (LinkButton)e.Row.FindControl("btnEdit");
+                LinkButton btnDelete = (LinkButton)e.Row.FindControl("btnDelete");
                 //LinkButton btnView = (LinkButton)e.Row.FindControl("btnView");
 
                 if (btnEdit != null) btnEdit.Visible = access.CanEdit;
+                if (btnDelete != null) btnDelete.Visible = access.CanDelete;
                 //if (btnView != null) btnView.Visible = access.CanView;
 
                 if (e.Row.RowIndex == TableDepartement.EditIndex)
@@ -350,6 +353,45 @@ namespace BAP_System
             }
 
             return (isSuccess, scopeIdentity, dt);
+        }
+
+
+        protected void btnDelete_Click(object sender, EventArgs e)
+        {
+            ResultValue Result = new ResultValue();
+
+            string Message = "";
+
+
+            LinkButton btn = (LinkButton)sender;
+            int rowIndex = int.Parse(btn.CommandArgument);
+
+            GridViewRow row = TableDepartement.Rows[rowIndex];
+
+            Guid dirid = SafeParseGuid(TableDepartement.DataKeys[rowIndex].Values["Department_id"]);
+
+            Departement_id.Value = dirid.ToString();
+
+            Sp_Dept("Delete");
+
+            GetDept();
+
+            TableDepartement.UseAccessibleHeader = true;
+            TableDepartement.HeaderRow.TableSection = TableRowSection.TableHeader;
+
+
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "error", "FuncRemove();", true);
+
+        }
+
+        private Guid SafeParseGuid(object value)
+        {
+            if (value == null) return Guid.Empty;
+
+            var str = value.ToString();
+            return !string.IsNullOrWhiteSpace(str) && Guid.TryParse(str, out var result)
+                ? result
+                : Guid.Empty;
         }
 
     }
