@@ -42,7 +42,12 @@
                 type: 'success',
                 showConfirmButton: false,
                 timer: 2000
-            });
+            }, function redirect() {
+                window.location.href = 'Master_GeneralLedgerBAP.aspx';
+            }
+
+
+            );
 
 
         }

@@ -62,6 +62,9 @@
                 showConfirmButton: false,
                 html: true,
             },
+                function redirect() {
+                    window.location.href = 'Master_AccoutBAP.aspx';
+                }
             );
         }
 
@@ -890,7 +893,9 @@
                                     <div class='col-sm-12'>
                                         <div class="table-responsive">
                                             <asp:HiddenField ID="GL_id" runat="server" />
-                                            <asp:HiddenField ID="IdBS" runat="server" />
+                                            <asp:HiddenField ID="IdBS" runat="server" /> 
+                                            <asp:HiddenField ID="Account_idBS" runat="server" /> 
+                                            
                                             <asp:GridView ID="TableGLaccount" ClientIDMode="Static" runat="server" AutoGenerateColumns="False"
                                                               CssClass="table table-striped table-bordered zero-configuration text-nowrap"
                                                               EmptyDataText="No Record Found"
@@ -900,7 +905,7 @@
                                                               OnRowCancelingEdit="TableGLaccount_RowCancelingEdit"
                                                               OnRowUpdating="TableGLaccount_RowUpdating"
                                                               OnRowDataBound="TableGLaccount_RowDataBound"
-                                                              DataKeyNames="IdBS,GL_id,Account_id">
+                                                              DataKeyNames="IdBS,GL_id,Account_idBS">
 
                                                     <HeaderStyle BackColor="#06183d" ForeColor="White" />
                                                     <Columns>
@@ -1003,7 +1008,7 @@
                                                               OnRowCancelingEdit="TablePLaccount_RowCancelingEdit"
                                                               OnRowUpdating="TablePLaccount_RowUpdating"
                                                               OnRowDataBound="TablePLaccount_RowDataBound"
-                                                              DataKeyNames="IdBS,GL_id,Account_id,Branch_id,Dept_id">
+                                                              DataKeyNames="IdBS,GL_id,Account_idBS,Branch_id,Dept_id">
 
                                                     <HeaderStyle BackColor="#06183d" ForeColor="White" />
                                                     <Columns>

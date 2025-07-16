@@ -15,6 +15,8 @@ using DocumentFormat.OpenXml.Bibliography;
 using System.EnterpriseServices;
 using BAP_System.Models;
 using DocumentFormat.OpenXml.Math;
+using System.Drawing;
+using Microsoft.Identity.Client;
 
 namespace BAP_System
 {
@@ -25,6 +27,7 @@ namespace BAP_System
         {
             if (!IsPostBack)
             {
+
                 GetDataAccount();
                 var access = GetAccessForPage();
 
@@ -33,6 +36,132 @@ namespace BAP_System
                     btNew.Visible = access.CanCreate;
                     //btNewGL.Visible = access.CanCreate;
                 }
+
+
+                string showModal = Request.QueryString["showModal"];
+                if (showModal == "1")
+                {
+                    #region  untuk delete reload
+
+
+                    Account_id.Value = Request.QueryString["accountId"].ToString();
+
+                    GetDataPL();
+                    GetDataAccount();
+
+                    TablePLaccount.UseAccessibleHeader = true;
+                    TablePLaccount.HeaderRow.TableSection = TableRowSection.TableHeader;
+
+                    string script = @"
+                                    $(document).ready(function() {
+                                        $('#mdlViewsPL').modal('show');
+                                        swal({
+                                            title: 'Remove Success',
+                                            text: 'Successfully Removed',
+                                            timer: 3000,
+                                            type: 'success',
+                                            showConfirmButton: false,
+                                            html: true
+                                        });
+
+                                        // Remove query string after load
+                                        if (window.history.replaceState) {
+                                            window.history.replaceState(null, null, window.location.pathname);
+                                        }
+                                    });";
+
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "ShowModalAfterDelete", script, true);
+
+
+
+                    #endregion
+                }
+                else if (showModal == "2")
+                {
+                    #region untuk add new reload BS
+                    if (showModal == "2")
+                    {
+                        Account_id.Value = Request.QueryString["accountId"].ToString();
+                       
+                        GetDataBs();
+                        GetDataAccount();
+                        
+                        TableGLaccount.UseAccessibleHeader = true;
+                        TableGLaccount.HeaderRow.TableSection = TableRowSection.TableHeader;
+                        string script = @"
+                                    $(document).ready(function() {
+                                        $('#mdlViewsBS').modal('show');
+                                        swal({
+                                            title: 'Remove Success',
+                                            text: 'Successfully Removed',
+                                            timer: 3000,
+                                            type: 'success',
+                                            showConfirmButton: false,
+                                            html: true
+                                        });
+                                        // Remove query string after load
+                                        if (window.history.replaceState) {
+                                            window.history.replaceState(null, null, window.location.pathname);
+                                        }
+                                    });";
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "ShowModalAfterDelete", script, true);
+                    }
+                    #endregion
+                }
+                else if (showModal == "3")
+                {
+                    #region Untuk delete reload add/edit
+
+                    string accountId = Request.QueryString["accountId"];
+                    string modul = Request.QueryString["modul"];
+
+                    Account_id.Value = accountId;
+
+                    string modalId = "";
+                    if (modul == "gl")
+                    {
+                        GetDataBs();
+                        GetDataAccount();
+                        TableGLaccount.UseAccessibleHeader = true;
+                        TableGLaccount.HeaderRow.TableSection = TableRowSection.TableHeader;
+                        modalId = "mdlViewsBS";
+                    }
+                    else if (modul == "pl")
+                    {
+                        GetDataPL();
+                        GetDataAccount();
+                        TablePLaccount.UseAccessibleHeader = true;
+                        TablePLaccount.HeaderRow.TableSection = TableRowSection.TableHeader;
+                        modalId = "mdlViewsPL";
+                    }
+
+                    if (!string.IsNullOrEmpty(modalId))
+                    {
+                        string script = $@"
+                            $(document).ready(function() {{
+                                $('#{modalId}').modal('show');
+                                swal({{
+                                    title: 'Success',
+                                    text: 'Successfully save',
+                                    timer: 3000,
+                                    type: 'success',
+                                    showConfirmButton: false,
+                                    html: true
+                                }});
+
+                                if (window.history.replaceState) {{
+                                    window.history.replaceState(null, null, window.location.pathname);
+                                }}
+                            }});";
+
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "ShowModalAfterSuccess", script, true);
+                    }
+
+                    #endregion
+                }
+
+
+
 
 
             }
@@ -400,6 +529,8 @@ namespace BAP_System
             GridViewRow row = TableGLaccount.Rows[rowIndex];
 
             Guid IdBS_ = SafeParseGuid(TableGLaccount.DataKeys[e.RowIndex].Values["IdBS"]);
+            Guid accountId = SafeParseGuid(TableAccount.DataKeys[e.RowIndex].Values["Account_id"]);
+
             DropDownList glbs = (DropDownList)row.FindControl("ddlGLbs");
 
 
@@ -429,21 +560,22 @@ namespace BAP_System
                 TableGLaccount.EditIndex = -1;
 
 
-                GetDataBs();
-                GetDataAccount();
+                //GetDataBs();
+                //GetDataAccount();
 
-                TableGLaccount.UseAccessibleHeader = true;
-                TableGLaccount.HeaderRow.TableSection = TableRowSection.TableHeader;
+                //TableGLaccount.UseAccessibleHeader = true;
+                //TableGLaccount.HeaderRow.TableSection = TableRowSection.TableHeader;
 
-                string errorMessage = "Success";
-                Message = $@"
-                            setTimeout(function() {{
-                                FuncSavegl('{HttpUtility.JavaScriptStringEncode(errorMessage)}');
-                            }}, 500);
-                            $('#mdlViewsBS').modal('show');";
+                //string errorMessage = "Success";
+                //Message = $@"
+                //            setTimeout(function() {{
+                //                FuncSavegl('{HttpUtility.JavaScriptStringEncode(errorMessage)}');
+                //            }}, 500);
+                //            $('#mdlViewsBS').modal('show');";
 
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "showErrorWithModal", Message, true);
-
+                //ScriptManager.RegisterStartupScript(this, this.GetType(), "showErrorWithModal", Message, true);
+                string redirectUrl = "Master_AccoutBAP.aspx?showModal=3&modul="+"gl"+"&accountId=" + Server.UrlEncode(accountId.ToString());
+                Response.Redirect(redirectUrl);
 
             }
             else
@@ -496,6 +628,8 @@ namespace BAP_System
             GridViewRow row = TablePLaccount.Rows[rowIndex];
 
             Guid IdBS_ = SafeParseGuid(TablePLaccount.DataKeys[e.RowIndex].Values["IdBS"]);
+            Guid accountId = SafeParseGuid(TableAccount.DataKeys[e.RowIndex].Values["Account_id"]);
+
             DropDownList glbs = (DropDownList)row.FindControl("ddlGLbs");
             DropDownList glbranch = (DropDownList)row.FindControl("ddlbranch");
             DropDownList gldept = (DropDownList)row.FindControl("ddldept");
@@ -526,20 +660,25 @@ namespace BAP_System
                 TablePLaccount.EditIndex = -1;
 
 
-                GetDataPL();
-                GetDataAccount();
+                //GetDataPL();
+                //GetDataAccount();
 
-                TablePLaccount.UseAccessibleHeader = true;
-                TablePLaccount.HeaderRow.TableSection = TableRowSection.TableHeader;
+                //TablePLaccount.UseAccessibleHeader = true;
+                //TablePLaccount.HeaderRow.TableSection = TableRowSection.TableHeader;
 
-                string errorMessage = "Success";
-                Message = $@"
-                            setTimeout(function() {{
-                                FuncSavegl('{HttpUtility.JavaScriptStringEncode(errorMessage)}');
-                            }}, 500);
-                            $('#mdlViewsPL').modal('show');";
+                //string errorMessage = "Success";
+                //Message = $@"
+                //            setTimeout(function() {{
+                //                FuncSavegl('{HttpUtility.JavaScriptStringEncode(errorMessage)}');
+                //            }}, 500);
+                //            $('#mdlViewsPL').modal('show');";
 
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "showErrorWithModal", Message, true);
+                //ScriptManager.RegisterStartupScript(this, this.GetType(), "showErrorWithModal", Message, true);
+
+
+                string redirectUrl = "Master_AccoutBAP.aspx?showModal=3&modul="+"pl"+"&accountId=" + Server.UrlEncode(accountId.ToString());
+                Response.Redirect(redirectUrl);
+
 
 
             }
@@ -961,7 +1100,6 @@ namespace BAP_System
         {
             ResultValue Result = new ResultValue();
 
-            string Message = "";
 
             LinkButton btn = (LinkButton)sender;
             int rowIndex = int.Parse(btn.CommandArgument);
@@ -970,28 +1108,26 @@ namespace BAP_System
 
 
             Guid dirid = SafeParseGuid(TableGLaccount.DataKeys[rowIndex].Values["IdBS"]);
+            Guid accountId = SafeParseGuid(TablePLaccount.DataKeys[rowIndex].Values["Account_idBS"]);
 
 
 
             IdBS.Value = dirid.ToString();
-
             Sp_Account("DeleteBS");
 
 
-            GetDataBs();
-            GetDataAccount();
-
-            TableGLaccount.UseAccessibleHeader = true;
-            TableGLaccount.HeaderRow.TableSection = TableRowSection.TableHeader;
 
 
-            Message = $@"
-                            setTimeout(function() {{
-                                FuncRemove();
-                            }}, 500);
-                            $('#mdlViewsBS').modal('show');";
+            //Message = $@"
+            //                setTimeout(function() {{
+            //                    FuncRemove();
+            //                }}, 500);
+            //                $('#mdlViewsBS').modal('show');";
 
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "showErrorWithModal", Message, true);
+            //ScriptManager.RegisterStartupScript(this, this.GetType(), "showErrorWithModal", Message, true);
+
+            string redirectUrl = "Master_AccoutBAP.aspx?showModal=2&accountId=" + Server.UrlEncode(accountId.ToString());
+            Response.Redirect(redirectUrl);
 
             //ScriptManager.RegisterStartupScript(Page, Page.GetType(), "modalAndError", @"$('#mdlViewsBS').modal(); FuncRemove();", true);
 
@@ -1002,7 +1138,7 @@ namespace BAP_System
         {
             ResultValue Result = new ResultValue();
 
-            string Message = "";
+            //string Message = "";
 
             LinkButton btn = (LinkButton)sender;
             int rowIndex = int.Parse(btn.CommandArgument);
@@ -1011,25 +1147,28 @@ namespace BAP_System
 
 
             Guid dirid = SafeParseGuid(TablePLaccount.DataKeys[rowIndex].Values["IdBS"]);
+            Guid accountId = SafeParseGuid(TablePLaccount.DataKeys[rowIndex].Values["Account_idBS"]);
+
 
 
             IdBS.Value = dirid.ToString();
 
             Sp_Account("DeletePL");
 
-            GetDataPL();
-            GetDataAccount();
 
-            TablePLaccount.UseAccessibleHeader = true;
-            TablePLaccount.HeaderRow.TableSection = TableRowSection.TableHeader;
 
-            Message = $@"
-                            setTimeout(function() {{
-                                FuncRemove();
-                            }}, 500);
-                            $('#mdlViewsPL').modal('show');";
+            //Message = $@"
+            //                setTimeout(function() {{
+            //                    FuncRemove();
+            //                }}, 500);
+            //                $('#mdlViewsPL').modal('show');";
 
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "showErrorWithModal", Message, true);
+            //ScriptManager.RegisterStartupScript(this, this.GetType(), "showErrorWithModal", Message, true);
+
+            string redirectUrl = "Master_AccoutBAP.aspx?showModal=1&accountId=" + Server.UrlEncode(accountId.ToString());
+            Response.Redirect(redirectUrl);
+
+
 
         }
 

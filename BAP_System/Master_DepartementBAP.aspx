@@ -46,6 +46,8 @@
                 type: 'success',
                 showConfirmButton: false,
                 html: true,
+            }, function redirect() {
+                window.location.href = 'Master_DepartementBAP.aspx';
             }
             );
         }

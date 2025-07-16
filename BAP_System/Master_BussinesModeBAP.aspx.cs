@@ -226,7 +226,6 @@ namespace BAP_System
         {
             ResultValue Result = new ResultValue();
 
-            string Message = "";
 
             LinkButton btn = (LinkButton)sender;
             int rowIndex = int.Parse(btn.CommandArgument);

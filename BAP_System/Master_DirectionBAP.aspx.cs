@@ -227,7 +227,6 @@ namespace BAP_System
         protected void btnDelete_Click(object sender, EventArgs e)
         {
             //ResultValue Result = new ResultValue();
-            string Message = "";
 
 
             LinkButton btn = (LinkButton)sender;
