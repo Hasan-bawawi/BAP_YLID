@@ -275,6 +275,7 @@
 
 
       function validateRow(btn) {
+
           var row = btn.closest("tr");
 
           var code = row.querySelector("#txtAccountCode");
